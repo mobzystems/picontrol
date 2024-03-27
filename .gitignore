@@ -1,3 +1,5 @@
 /bin/
 /obj/
 /wwwroot/
+/scripts/*
+!/scripts/[Tt]est*
