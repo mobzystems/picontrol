@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -25,10 +26,13 @@ app.MapGet("/run/{script:regex(^[a-zA-Z0-9- ]+$)}", async (
 
 app.Run();
 
-List<string> GetAvailableScripts(IWebHostEnvironment host) {
-  return Directory.GetFiles(Path.Combine(host.ContentRootPath, "scripts"), $"*.{app_exension}", SearchOption.TopDirectoryOnly)
-    .Select(p => Path.GetFileNameWithoutExtension(p))
-    .ToList();
+IResult GetAvailableScripts(IWebHostEnvironment host) {
+  return TypedResults.Json(
+    Directory.GetFiles(Path.Combine(host.ContentRootPath, "scripts"), $"*.{app_exension}", SearchOption.TopDirectoryOnly)
+      .Select(p => Path.GetFileNameWithoutExtension(p))
+      .ToList(),
+    new JsonContext()
+  );
 }
 
 /// <summary>
@@ -104,7 +108,7 @@ async Task<IResult> RunScriptAsync(string script, IWebHostEnvironment host, ILog
       Output = output,
       Error = error,
       Exception = exception
-    });
+    }, new JsonContext());
   }
 
   logger.LogWarning($"File does not exist: '{fullPath}");
@@ -115,8 +119,16 @@ async Task<IResult> RunScriptAsync(string script, IWebHostEnvironment host, ILog
 
 struct RunResult
 {
+  [JsonPropertyName("output")]
   public string Output { init; get; }
+
+  [JsonPropertyName("error")]
   public string Error { init; get; }
+
+  [JsonPropertyName("exception")]
   public string Exception { init; get; }
 }
 
+[JsonSerializable(typeof(RunResult))]
+[JsonSerializable(typeof(List<string>))]
+partial class JsonContext : JsonSerializerContext { }

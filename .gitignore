@@ -3,3 +3,4 @@
 /wwwroot/
 /scripts/*
 !/scripts/[Tt]est*
+/.vs/

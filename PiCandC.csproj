@@ -6,4 +6,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="picandc\**" />
+    <Content Remove="picandc\**" />
+    <EmbeddedResource Remove="picandc\**" />
+    <None Remove="picandc\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="scripts\test.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\test.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
