@@ -1,0 +1,9 @@
+.output {
+  background-color: lightgrey;
+  padding: 1rem;
+}
+
+.error {
+  color: red;
+  padding: 1rem;
+}
