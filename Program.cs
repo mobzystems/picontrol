@@ -4,8 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 var app_timeout = app.Configuration.GetValue<int>("AppSettings:Timeout", 30_000);
+var app_exension = OperatingSystem.IsWindows() ? "cmd" : "sh";
 
-app.Logger.LogInformation($"Script timeout is {app_timeout} ms");
+app.Logger.LogInformation($"Script timeout is {app_timeout} ms, extension *.{app_exension}");
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
@@ -15,8 +16,8 @@ app.UseStaticFiles();
 
 app.MapGet("/run", (IWebHostEnvironment host) => GetAvailableScripts(host));
 
-// The script route parameters must match "letters, digit or hyphen" followed by .sh or .cmd
-app.MapGet("/run/{script:regex(^[a-zA-Z0-9-]+.(sh|cmd)$)}", async (
+// The script route parameters must match "letters, digit, space or hyphen" wihtout an extension
+app.MapGet("/run/{script:regex(^[a-zA-Z0-9- ]+$)}", async (
     string script,
     IWebHostEnvironment host
   ) => await RunScriptAsync(script, host, app.Logger)
@@ -25,7 +26,7 @@ app.MapGet("/run/{script:regex(^[a-zA-Z0-9-]+.(sh|cmd)$)}", async (
 app.Run();
 
 List<string> GetAvailableScripts(IWebHostEnvironment host) {
-  return Directory.GetFiles(Path.Combine(host.ContentRootPath, "scripts"), "*.sh", SearchOption.TopDirectoryOnly)
+  return Directory.GetFiles(Path.Combine(host.ContentRootPath, "scripts"), $"*.{app_exension}", SearchOption.TopDirectoryOnly)
     .Select(p => Path.GetFileNameWithoutExtension(p))
     .ToList();
 }
@@ -37,7 +38,7 @@ async Task<IResult> RunScriptAsync(string script, IWebHostEnvironment host, ILog
 {
   logger.LogInformation($"Starting script '{script}'...");
 
-  var fullPath = Path.Combine(host.ContentRootPath, "scripts", script);
+  var fullPath = $"{Path.Combine(host.ContentRootPath, "scripts", script)}.{app_exension}";
   logger.LogDebug($"Full file name is '{fullPath}'.");
 
   if (File.Exists(fullPath))
@@ -97,7 +98,7 @@ async Task<IResult> RunScriptAsync(string script, IWebHostEnvironment host, ILog
       logger.LogTrace($"Error '{fullPath}': {error}");
     }
 
-    logger.LogInformation($"Returning {output.Length} chars output, {error.Length} chars error.");
+    logger.LogInformation($"Returning {output.Length} chars output, {error.Length} chars error, exception is '{exception}'.");
     return TypedResults.Json(new RunResult
     {
       Output = output,

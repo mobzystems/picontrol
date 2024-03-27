@@ -15,7 +15,7 @@ function App() {
   async function fetchData(script: string) {
     setState({ running: true, result: undefined });
     try {
-    var r = await fetch(`/run/${script}.sh`);
+    var r = await fetch(`/run/${script}`);
     if (!r.ok) {
       console.log(r.status); 
       setState({ running: false, result: { output: "", error: "", exception: `Server returned status ${r.status}` }});
