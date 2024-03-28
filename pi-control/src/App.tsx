@@ -14,7 +14,7 @@ export default function App() {
     if (scripts === undefined) {
       fetch(`/run/`)
         .then(r => r.json())
-        .then((data: string[]) => setScripts(data))
+        .then((data: string[]) => { data.sort(); setScripts(data) })
         .catch(error => console.log(error))
         ;
     }
@@ -82,7 +82,7 @@ function Main(props: {
       <div id="content">
         {state.running
           ?
-          <p>Running...</p>
+          <p>Running '{currentScript}'...</p>
           : <>
             {state.result === undefined ?
               <>
