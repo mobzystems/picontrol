@@ -4,3 +4,5 @@
 /scripts/*
 !/scripts/[Tt]est*
 /.vs/
+/.config/
+*.user
