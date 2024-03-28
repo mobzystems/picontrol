@@ -10,7 +10,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/run/': 'http://localhost:5000/'
+      '/run/': 'http://localhost:55000/'
     }
   }
 })

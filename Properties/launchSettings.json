@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "PiCandC": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54999;http://localhost:55000"
+    }
+  }
+}
