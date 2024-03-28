@@ -7,6 +7,12 @@ html, body, #root
   overflow: hidden;
 }
 
+/* bulma fix */
+pre {
+  overflow: none;
+  background-color: inherit;
+}
+
 #root {
   width: 100vw;
   height: 100vh;
@@ -46,5 +52,4 @@ html, body, #root
 .scroller {
   grid-area: tabcontent;
   overflow: auto;
-  min-height: 4000px;
 }
