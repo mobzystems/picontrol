@@ -74,7 +74,7 @@ function Main(props: {
             <button className={`button is-success${state.running ? ' is-loading' : ''}`} disabled={state.running || currentScript === ''} onClick={() => fetchData(currentScript!)}>Run</button>
           </p>
           <p className="control">
-            <button className="button is-danger" disabled={state.running} onClick={() => setState({ running: false, result: undefined })}>Clear</button>
+            <button className="button is-danger" disabled={state.running || state.result === undefined} onClick={() => setState({ running: false, result: undefined })}>Clear</button>
           </p>
         </div>
       </div>
@@ -85,25 +85,27 @@ function Main(props: {
           <p>Running...</p>
           : <>
             {state.result === undefined ?
-              <p>Please select a command.</p>
+              <>
+              {/* <p>Please select a command.</p> */}
+              </>
               :
               <>
-              <div id="messages">
-                {state.result.exception !== '' &&
-                  <article className="message is-danger">
-                    {/* <div className="message-header">There was an exception</div> */}
-                    <div className="message-body">{state.result.exception}</div>
-                  </article>
-                }
+                <div id="messages">
+                  {state.result.exception !== '' &&
+                    <article className="message is-danger">
+                      {/* <div className="message-header">There was an exception</div> */}
+                      <div className="message-body">{state.result.exception}</div>
+                    </article>
+                  }
 
-                {state.result.error !== '' &&
-                  <article className="message is-warning">
-                    {/* <div className="message-header">There was an error output</div> */}
-                    <div className="message-body">See the Error tab for errors</div>
-                  </article>
-                }
+                  {state.result.error !== '' &&
+                    <article className="message is-warning">
+                      {/* <div className="message-header">There was an error output</div> */}
+                      <div className="message-body">See the Error tab for errors</div>
+                    </article>
+                  }
                 </div>
-                
+
                 <div className="tabs">
                   <ul>
                     <li onClick={() => setCurrentTab('Output')} className={currentTab === 'Output' ? 'is-active' : ''}><a>Output</a></li>
